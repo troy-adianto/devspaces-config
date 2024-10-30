@@ -1,6 +1,6 @@
 schemaVersion: 2.2.2
 metadata:
-  name: java-workspace
+  name: quarkus-quickstart
 components:
   - name: tools
     container:
@@ -14,9 +14,10 @@ components:
           protocol: tcp
           targetPort: 5005
         - exposure: public
-          name: api-endpoint
+          name: hello-greeting
           protocol: https
           targetPort: 8080
+          path: /hello/greeting/devspaces-user
       volumeMounts:
         - name: m2
           path: /home/user/.m2
@@ -29,12 +30,21 @@ components:
     volume:
       size: 1G
 commands:
-  - id: 0-update-ca-trust
+  - id: 1-package
     exec:
-      label: "1.Update ca trust"
+      label: "1. Package the application"
       component: tools
-      workingDir: ${PROJECTS_ROOT}
-      commandLine: "update-ca-certificates"
-events:
-  postStart:
-    - 0-update-ca-trust
+      workingDir: ${PROJECTS_ROOT}/quarkus-quickstarts/getting-started
+      commandLine: "mvn package"
+      group:
+        kind: build
+        isDefault: true
+  - id: 2-startdev
+    exec:
+      label: "2. Start Development mode (Hot reload + debug)"
+      component: tools
+      workingDir: ${PROJECTS_ROOT}/quarkus-quickstarts/getting-started
+      commandLine: "mvn compile quarkus:dev"
+      group:
+        kind: run
+        isDefault: true
