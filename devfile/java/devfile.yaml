@@ -1,0 +1,40 @@
+schemaVersion: 2.2.2
+metadata:
+  name: java-workspace
+components:
+  - name: tools
+    container:
+      image: registry.redhat.io/devspaces/udi-rhel8:3.16
+      env:
+        - name: QUARKUS_HTTP_HOST
+          value: 0.0.0.0
+      endpoints:
+        - exposure: none
+          name: debug
+          protocol: tcp
+          targetPort: 5005
+        - exposure: public
+          name: api-endpoint
+          protocol: https
+          targetPort: 8080
+      volumeMounts:
+        - name: m2
+          path: /home/user/.m2
+      cpuLimit: '4'
+      cpuRequest: '1'
+      memoryLimit: '8G'
+      memoryRequest: '4G'
+      mountSources: true
+  - name: m2
+    volume:
+      size: 1G
+commands:
+  - id: 0-update-ca-trust
+    exec:
+      label: "1.Update ca trust"
+      component: tools
+      workingDir: ${PROJECTS_ROOT}
+      commandLine: "update-ca-certificates"
+events:
+  postStart:
+    - 0-update-ca-trust
