@@ -30,6 +30,12 @@ components:
     volume:
       size: 1G
 commands:
+  - id: update-ca-trust
+    exec:
+      label: "Update ca trust"
+      component: tools
+      workingDir: ${PROJECTS_ROOT}
+      commandLine: "update-ca-trust"
   - id: 1-package
     exec:
       label: "1. Package the application"
@@ -48,3 +54,6 @@ commands:
       group:
         kind: run
         isDefault: true
+events:
+  postStart:
+    - update-ca-trust
