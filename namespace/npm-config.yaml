@@ -1,0 +1,12 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: disconnected-env
+  annotations:
+    controller.devfile.io/mount-as: env
+  labels:
+    controller.devfile.io/mount-to-devworkspace: 'true'
+    controller.devfile.io/watch-configmap: 'true'
+data:
+  NPM_CONFIG_REGISTRY: >-
+    https://<npm_artifact_repository_route>/repository/npm-all/
